@@ -3,11 +3,11 @@ import React from 'react';
 interface Props {
 	title: string;
 	price: number;
-	img: string;
+	imageUrl: string;
 	sizes: Array<number>;
 	types: Array<number>;
 }
-function PizzaBlock({ title, price, img, sizes, types }: Props) {
+function PizzaBlock({ title, price, imageUrl, sizes, types }: Props) {
 	const [pizzaCount, setPizzaCount] = React.useState(0);
 	const [activeType, setActiveType] = React.useState(0);
 	const [activeSize, setActiveSize] = React.useState(0);
@@ -20,7 +20,7 @@ function PizzaBlock({ title, price, img, sizes, types }: Props) {
 	};
 	return (
 		<div className='pizza-block'>
-			<img className='pizza-block__image' src={img} alt='Pizza' />
+			<img className='pizza-block__image' src={imageUrl} alt='Pizza' />
 			<h4 className='pizza-block__title'>{title}</h4>
 			<div className='pizza-block__selector'>
 				<ul>
