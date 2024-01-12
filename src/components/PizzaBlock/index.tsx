@@ -1,32 +1,47 @@
-import { useState } from 'react';
+import React from 'react';
 
 interface Props {
 	title: string;
 	price: number;
+	img: string;
+	sizes: Array<number>;
+	types: Array<number>;
 }
-function PizzaBlock({ title, price }: Props) {
-	const [pizzaCount, setPizzaCount] = useState(0);
+function PizzaBlock({ title, price, img, sizes, types }: Props) {
+	const [pizzaCount, setPizzaCount] = React.useState(0);
+	const [activeType, setActiveType] = React.useState(0);
+	const [activeSize, setActiveSize] = React.useState(0);
 
+	const typeNames: Array<string> = ['тонкое', 'традиционное'];
+
+	// Увеличение счетчика на кнопке
 	const onClickAdd = () => {
 		setPizzaCount(pizzaCount + 1);
 	};
 	return (
 		<div className='pizza-block'>
-			<img
-				className='pizza-block__image'
-				src='https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg'
-				alt='Pizza'
-			/>
+			<img className='pizza-block__image' src={img} alt='Pizza' />
 			<h4 className='pizza-block__title'>{title}</h4>
 			<div className='pizza-block__selector'>
 				<ul>
-					<li className='active'>тонкое</li>
-					<li>традиционное</li>
+					{types.map((type, idx) => (
+						<li
+							onClick={() => setActiveType(idx)}
+							className={activeType === idx ? 'active' : ''}
+						>
+							{typeNames[type]}
+						</li>
+					))}
 				</ul>
 				<ul>
-					<li className='active'>26 см.</li>
-					<li>30 см.</li>
-					<li>40 см.</li>
+					{sizes.map((size, idx) => (
+						<li
+							onClick={() => setActiveSize(idx)}
+							className={activeSize === idx ? 'active' : ''}
+						>
+							{size} см.
+						</li>
+					))}
 				</ul>
 			</div>
 			<div className='pizza-block__bottom'>
