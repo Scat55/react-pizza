@@ -28,6 +28,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }: Props) {
 						<li
 							onClick={() => setActiveType(idx)}
 							className={activeType === idx ? 'active' : ''}
+							key={type}
 						>
 							{typeNames[type]}
 						</li>
@@ -38,6 +39,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }: Props) {
 						<li
 							onClick={() => setActiveSize(idx)}
 							className={activeSize === idx ? 'active' : ''}
+							key={idx}
 						>
 							{size} см.
 						</li>
