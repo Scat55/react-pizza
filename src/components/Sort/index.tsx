@@ -1,4 +1,15 @@
+import React from 'react';
+
 function Sort() {
+	const [isVisiblePopup, setIsVisiblePopup] = React.useState(false);
+	const [selectedName, setSelectedName] = React.useState(0);
+	const sortList: Array<string> = ['популярности', 'цене', 'алфавиту'];
+	const sortName = sortList[selectedName];
+
+	const sortedListItem = (index: number) => {
+		setSelectedName(index);
+		setIsVisiblePopup(!isVisiblePopup);
+	};
 	return (
 		<div className='sort'>
 			<div className='sort__label'>
@@ -15,15 +26,27 @@ function Sort() {
 					/>
 				</svg>
 				<b>Сортировка по:</b>
-				<span>популярности</span>
+				<span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>
+					{/* Показываем название сортировке в зависимости от выбора пользователя */}
+					{sortName}
+				</span>
 			</div>
-			<div className='sort__popup'>
-				<ul>
-					<li className='active'>популярности</li>
-					<li>цене</li>
-					<li>алфавиту</li>
-				</ul>
-			</div>
+			{isVisiblePopup && (
+				<div className='sort__popup'>
+					<ul>
+						{/* Рендер листа с названием сортировок */}
+						{sortList.map((list, idx) => (
+							<li
+								className={selectedName == idx ? 'active' : ''}
+								onClick={() => sortedListItem(idx)}
+								key={idx}
+							>
+								{list}
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 }
