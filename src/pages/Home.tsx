@@ -10,7 +10,7 @@ function Home() {
 
 	React.useEffect(() => {
 		const response = async () => {
-			await axios.get('https://19c886375be11f9f.mokky.dev/pizzas').then(res => {
+			await axios.get('https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas').then(res => {
 				setItems(res.data);
 				setIsLoading(false);
 			});
