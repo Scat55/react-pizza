@@ -4,12 +4,6 @@
 	ul {
 		display: flex;
 
-		@media (max-width: 1291px) {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 0.5rem;
-		}
-
 		li {
 			background-color: #f9f9f9;
 			padding: 13px 30px;
