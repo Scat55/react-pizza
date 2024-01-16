@@ -4,6 +4,7 @@ import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 // import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
+import Pagination from '../components/Pagination';
 
 interface Search {
   searchValue: string;
@@ -20,6 +21,9 @@ function Home({ searchValue }: Search) {
     sortProperty: 'rating',
   });
 
+  // State для пагинации
+  const [currentPage, setCurrentPage] = React.useState(1);
+
   // Делаем запрос на сервер
   // С помощью параметра search мы делаем запрос на сервер, и тем самым получается поиск
   React.useEffect(() => {
@@ -30,7 +34,7 @@ function Home({ searchValue }: Search) {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
     fetch(
-      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order}${search}`,
+      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
     )
       .then((res) => res.json())
       .then((arr) => {
@@ -38,7 +42,7 @@ function Home({ searchValue }: Search) {
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue]);
+  }, [categoryId, sortType, searchValue, currentPage]);
 
   // Прежде чем рендерить пиццы, фильтруем их. В итоге получаем функционал поиска
   // Такой вариант подходит для статики. То есть когда данных не много и они не будут добаляться
@@ -53,6 +57,7 @@ function Home({ searchValue }: Search) {
   const skeleton = [...new Array(6)].map((_, index) => (
     <Skeleton key={index} />
   ));
+
   return (
     <div className="container">
       <div className="content__top">
@@ -64,6 +69,7 @@ function Home({ searchValue }: Search) {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeleton : pizzas}</div>
+      <Pagination onChangePage={(number) => setCurrentPage(number)} />
     </div>
   );
 }
