@@ -30,3 +30,18 @@
   height: 24px;
   opacity: 0.3;
 }
+
+.clear {
+  width: 22px;
+  height: 24px;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: all .3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
