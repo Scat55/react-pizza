@@ -6,24 +6,24 @@ interface Props {
 }
 
 interface NameSorted {
-  id: number;
   name: string;
   sortProperty: string;
 }
 
 function Sort({ sortValue, onChangeSort }: Props) {
+  // Открытие и закрытие попапа
   const [isVisiblePopup, setIsVisiblePopup] = React.useState(false);
 
   const sortList: NameSorted[] = [
-    { name: 'популярности', id: 0, sortProperty: 'rating' },
-    { name: 'цене', id: 1, sortProperty: 'price' },
-    { name: 'алфавиту', id: 2, sortProperty: 'title' },
+    { name: 'популярности', sortProperty: 'rating' },
+    { name: 'цене', sortProperty: 'price' },
+    { name: 'алфавиту', sortProperty: 'title' },
   ];
 
-  // const sortedListItem = (index: number) => {
-  //   onChangeSort(index);
-  //   setIsVisiblePopup(!isVisiblePopup);
-  // };
+  const sortedListItem = (index: object) => {
+    onChangeSort(index);
+    setIsVisiblePopup(!isVisiblePopup);
+  };
   return (
     <div className="sort">
       <div className="sort__label">
@@ -48,12 +48,16 @@ function Sort({ sortValue, onChangeSort }: Props) {
         <div className="sort__popup">
           <ul>
             {/* Рендер листа с названием сортировок */}
-            {sortList.map((list, idx) => (
+            {sortList.map((obj, idx) => (
               <li
-                className={sortValue.sortProperty == list.sortProperty ? 'active' : ''}
-                onClick={() => onChangeSort(list)}
-                key={idx}>
-                {list.name}
+                key={idx}
+                onClick={() => sortedListItem(obj)}
+                className={
+                  sortValue.sortProperty == obj.sortProperty
+                    ? 'active'
+                    : ''
+                }>
+                {obj.name}
               </li>
             ))}
           </ul>
