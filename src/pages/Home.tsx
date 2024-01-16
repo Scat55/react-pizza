@@ -19,8 +19,12 @@ function Home() {
   // Делаем запрос на сервер
   React.useEffect(() => {
     setIsLoading(true);
+
+    const order = sortType.sortProperty.includes('-') ? 'asc' : 'desc';
+    const sortBy = sortType.sortProperty.replace('-', '');
+    const category = categoryId > 0 ? `category=${categoryId}` : '';
     fetch(
-      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?${categoryId > 0 ? `category=${categoryId}` : ''}&sortBy=${sortType.sortProperty}&order=desc`,
+      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order}`,
     )
       .then((res) => res.json())
       .then((arr) => {
