@@ -15,12 +15,12 @@ function Sort({ sortValue, onChangeSort }: Props) {
   const [isVisiblePopup, setIsVisiblePopup] = React.useState(false);
 
   const sortList: NameSorted[] = [
-    { name: 'популярности (DESC)', sortProperty: 'rating' },
-    { name: 'популярности (ASC)', sortProperty: '-rating' },
-    { name: 'цене (DESC)', sortProperty: 'price' },
-    { name: 'цене (ASC)', sortProperty: '-price' },
-    { name: 'алфавиту (DESC)', sortProperty: 'title' },
-    { name: 'алфавиту (ASC)', sortProperty: '-title' },
+    { name: 'популярности (убыванию)', sortProperty: 'rating' },
+    { name: 'популярности (возрастанию)', sortProperty: '-rating' },
+    { name: 'цене (убыванию)', sortProperty: 'price' },
+    { name: 'цене (возрастанию)', sortProperty: '-price' },
+    { name: 'алфавиту (Яя-Аа)', sortProperty: 'title' },
+    { name: 'алфавиту (Аа-Яя)', sortProperty: '-title' },
   ];
 
   const sortedListItem = (index: object) => {
