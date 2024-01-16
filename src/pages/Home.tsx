@@ -5,7 +5,11 @@ import PizzaBlock from '../components/PizzaBlock';
 // import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 
-function Home() {
+interface Search {
+  searchValue: string;
+}
+
+function Home({ searchValue }: Search) {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   // State Categories -> Function in the Category component
@@ -17,14 +21,16 @@ function Home() {
   });
 
   // Делаем запрос на сервер
+  // С помощью параметра search мы делаем запрос на сервер, и тем самым получается поиск
   React.useEffect(() => {
     setIsLoading(true);
 
     const order = sortType.sortProperty.includes('-') ? 'asc' : 'desc';
     const sortBy = sortType.sortProperty.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
+    const search = searchValue ? `&search=${searchValue}` : '';
     fetch(
-      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order}`,
+      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order}${search}`,
     )
       .then((res) => res.json())
       .then((arr) => {
@@ -32,8 +38,21 @@ function Home() {
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType]);
+  }, [categoryId, sortType, searchValue]);
 
+  // Прежде чем рендерить пиццы, фильтруем их. В итоге получаем функционал поиска
+  // Такой вариант подходит для статики. То есть когда данных не много и они не будут добаляться
+  // const pizzas = items
+  //   .filter((element) => {
+  //     return element.title.toLowerCase().includes(searchValue.toLowerCase());
+  //   })
+  //   .map((obj) => <PizzaBlock {...obj} key={obj.id} />);
+
+  const pizzas = items.map((obj) => <PizzaBlock {...obj} key={obj.id} />);
+
+  const skeleton = [...new Array(6)].map((_, index) => (
+    <Skeleton key={index} />
+  ));
   return (
     <div className="container">
       <div className="content__top">
@@ -44,11 +63,7 @@ function Home() {
         <Sort sortValue={sortType} onChangeSort={(i) => setSortType(i)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-          : items.map((obj) => <PizzaBlock {...obj} key={obj.id} />)}
-      </div>
+      <div className="content__items">{isLoading ? skeleton : pizzas}</div>
     </div>
   );
 }
