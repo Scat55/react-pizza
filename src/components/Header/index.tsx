@@ -1,15 +1,9 @@
 import { Link } from 'react-router-dom';
 import LogoSvg from '../../assets/img/pizza-logo.svg';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import Search from '../Search';
 
-interface Search {
-  searchValue: string;
-  setSearchValue: (value: string) => void;
-}
-
-function Header({ searchValue, setSearchValue }: Search) {
+function Header() {
   return (
     <div className="header">
       <div className="container">
@@ -22,7 +16,7 @@ function Header({ searchValue, setSearchValue }: Search) {
             <p>самая вкусная пицца во вселенной</p>
           </div>
         </div>
-        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+        <Search />
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
             <span>520 ₽</span>

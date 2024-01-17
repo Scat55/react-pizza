@@ -5,12 +5,10 @@ import PizzaBlock from '../components/PizzaBlock';
 // import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
+import { AppContext } from '../App.tsx';
 
-interface Search {
-  searchValue: string;
-}
-
-function Home({ searchValue }: Search) {
+function Home() {
+  const { searchValue } = React.useContext(AppContext);
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   // State Categories -> Function in the Category component
