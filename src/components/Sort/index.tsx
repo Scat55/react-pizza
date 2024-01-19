@@ -1,30 +1,32 @@
 import React from 'react';
 
-interface Props {
-  sortValue: object;
-  onChangeSort: (obj: object) => void;
-}
+import type { RootState } from '../../redux/store.ts';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSort } from '../../redux/slices/filterSlice.ts';
 
 interface NameSorted {
   name: string;
   sortProperty: string;
 }
 
-function Sort({ sortValue, onChangeSort }: Props) {
+const sortList: NameSorted[] = [
+  { name: 'популярности (убыванию)', sortProperty: 'rating' },
+  { name: 'популярности (возрастанию)', sortProperty: '-rating' },
+  { name: 'цене (убыванию)', sortProperty: 'price' },
+  { name: 'цене (возрастанию)', sortProperty: '-price' },
+  { name: 'алфавиту (Яя-Аа)', sortProperty: 'title' },
+  { name: 'алфавиту (Аа-Яя)', sortProperty: '-title' },
+];
+
+function Sort() {
+  const dispatch = useDispatch();
+  const sort = useSelector((state: RootState) => state.filter.sort);
+
   // Открытие и закрытие попапа
   const [isVisiblePopup, setIsVisiblePopup] = React.useState(false);
 
-  const sortList: NameSorted[] = [
-    { name: 'популярности (убыванию)', sortProperty: 'rating' },
-    { name: 'популярности (возрастанию)', sortProperty: '-rating' },
-    { name: 'цене (убыванию)', sortProperty: 'price' },
-    { name: 'цене (возрастанию)', sortProperty: '-price' },
-    { name: 'алфавиту (Яя-Аа)', sortProperty: 'title' },
-    { name: 'алфавиту (Аа-Яя)', sortProperty: '-title' },
-  ];
-
-  const sortedListItem = (index: object) => {
-    onChangeSort(index);
+  const sortedListItem = (obj: object) => {
+    dispatch(setSort(obj));
     setIsVisiblePopup(!isVisiblePopup);
   };
   return (
@@ -44,7 +46,7 @@ function Sort({ sortValue, onChangeSort }: Props) {
         <b>Сортировка по:</b>
         <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>
           {/* Показываем название сортировке в зависимости от выбора пользователя */}
-          {sortValue.name}
+          {sort.name}
         </span>
       </div>
       {isVisiblePopup && (
@@ -56,7 +58,7 @@ function Sort({ sortValue, onChangeSort }: Props) {
                 key={idx}
                 onClick={() => sortedListItem(obj)}
                 className={
-                  sortValue.sortProperty == obj.sortProperty ? 'active' : ''
+                  sort.sortProperty == obj.sortProperty ? 'active' : ''
                 }>
                 {obj.name}
               </li>
