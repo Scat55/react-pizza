@@ -2,7 +2,7 @@ import React from 'react';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
-// import axios from 'axios';
+import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { AppContext } from '../App.tsx';
@@ -18,10 +18,14 @@ function Home() {
   // );
 
   const { categoryId, sort } = useSelector((state: RootState) => state.filter);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const sortType = sort.sortProperty;
 
   const dispatch = useDispatch();
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const { searchValue } = React.useContext(AppContext);
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -42,12 +46,13 @@ function Home() {
     const sortBy = sortType.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
-    fetch(
-      `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    )
-      .then((res) => res.json())
-      .then((arr) => {
-        setItems(arr);
+
+    axios
+      .get(
+        `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+      )
+      .then(({ data }) => {
+        setItems(data);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
