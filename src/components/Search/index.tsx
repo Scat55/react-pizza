@@ -2,8 +2,15 @@ import styles from '../Search/Search.module.scss';
 import React from 'react';
 import { AppContext } from '../../App.tsx';
 
+interface Props {
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+}
+
 function Search() {
-  const { searchValue, setSearchValue } = React.useContext(AppContext);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  const { searchValue, setSearchValue } = React.useContext<Props>(AppContext);
   const inputRef = React.useRef();
   const onClickClear = () => {
     setSearchValue('');
