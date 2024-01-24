@@ -1,24 +1,37 @@
 import styles from '../Search/Search.module.scss';
 import React from 'react';
 import { AppContext } from '../../App.tsx';
+import debounce from 'lodash.debounce';
 
-interface Props {
-  searchValue: string;
+interface Context {
   setSearchValue: (value: string) => void;
 }
 
 function Search() {
+  const [value, setValue] = React.useState('');
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
-  const { searchValue, setSearchValue } = React.useContext<Props>(AppContext);
+  const { setSearchValue } = React.useContext<Context>(AppContext);
   const inputRef = React.useRef();
   const onClickClear = () => {
     setSearchValue('');
+    setValue('');
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     inputRef.current.focus();
   };
 
+  const updateSearchValue = React.useCallback(
+    debounce((str: string) => {
+      setSearchValue(str);
+    }, 250),
+    [],
+  );
+
+  const onChageInput = (event) => {
+    setValue(event.target.value);
+    updateSearchValue(event.target.value);
+  };
   return (
     <div className={styles.root}>
       <svg
@@ -31,14 +44,14 @@ function Search() {
       </svg>
       <input
         ref={inputRef}
-        onChange={(event) => setSearchValue(event.target.value)}
-        value={searchValue}
+        onChange={onChageInput}
+        value={value}
         type="text"
         placeholder="Поиск пиццы..."
         className={styles.input}
       />
 
-      {searchValue && (
+      {value && (
         <svg
           onClick={onClickClear}
           className={styles.clear}

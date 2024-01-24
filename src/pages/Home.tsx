@@ -8,7 +8,7 @@ import Pagination from '../components/Pagination';
 import { AppContext } from '../App.tsx';
 import type { RootState } from '../redux/store.ts';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId } from '../redux/slices/filterSlice.ts';
+import { setCategoryId, setPageCount } from '../redux/slices/filterSlice.ts';
 
 function Home() {
   // const categoryId = useSelector((state: RootState) => state.filter.categoryId);
@@ -17,7 +17,9 @@ function Home() {
   //   (state: RootState) => state.filter.sort.sortProperty,
   // );
 
-  const { categoryId, sort } = useSelector((state: RootState) => state.filter);
+  const { categoryId, sort, pageCount } = useSelector(
+    (state: RootState) => state.filter,
+  );
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const sortType = sort.sortProperty;
@@ -34,9 +36,6 @@ function Home() {
     dispatch(setCategoryId(index));
   };
 
-  // State для пагинации
-  const [currentPage, setCurrentPage] = React.useState(1);
-
   // Делаем запрос на сервер
   // С помощью параметра search мы делаем запрос на сервер, и тем самым получается поиск
   React.useEffect(() => {
@@ -49,14 +48,14 @@ function Home() {
 
     axios
       .get(
-        `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+        `https://65a56f1352f07a8b4a3f1aa3.mockapi.io/pizzas?page=${pageCount}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
       )
       .then(({ data }) => {
         setItems(data);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, currentPage]);
+  }, [categoryId, sortType, searchValue, pageCount]);
 
   // Прежде чем рендерить пиццы, фильтруем их. В итоге получаем функционал поиска
   // Такой вариант подходит для статики. То есть когда данных не много и они не будут добаляться
@@ -72,6 +71,9 @@ function Home() {
     <Skeleton key={index} />
   ));
 
+  const onChangePage = (number: number) => {
+    dispatch(setPageCount(number));
+  };
   return (
     <div className="container">
       <div className="content__top">
@@ -83,7 +85,7 @@ function Home() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeleton : pizzas}</div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination currentPage={pageCount} onChangePage={onChangePage} />
     </div>
   );
 }
