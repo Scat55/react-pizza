@@ -1,6 +1,6 @@
 import React from 'react';
 import Categories from '../components/Categories';
-import Sort from '../components/Sort';
+import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
@@ -8,9 +8,13 @@ import Pagination from '../components/Pagination';
 import { AppContext } from '../App.tsx';
 import type { RootState } from '../redux/store.ts';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setPageCount } from '../redux/slices/filterSlice.ts';
+import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice.ts';
+import qs from 'qs';
+import {useNavigate} from 'react-router-dom'
+
 
 function Home() {
+  const navigate = useNavigate()
   // const categoryId = useSelector((state: RootState) => state.filter.categoryId);
   //
   // const sortType = useSelector(
@@ -26,6 +30,9 @@ function Home() {
 
   const dispatch = useDispatch();
 
+  const isSearch = React.useRef(false)
+  const isMounted = React.useRef(false)
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const { searchValue } = React.useContext(AppContext);
@@ -38,7 +45,7 @@ function Home() {
 
   // Делаем запрос на сервер
   // С помощью параметра search мы делаем запрос на сервер, и тем самым получается поиск
-  React.useEffect(() => {
+  const fetchPizzas = () => {
     setIsLoading(true);
 
     const order = sortType.includes('-') ? 'asc' : 'desc';
@@ -54,8 +61,44 @@ function Home() {
         setItems(data);
         setIsLoading(false);
       });
+  }
+  // Если был первый рендер, то преверяем URL-параметры и сохраняем в Redux
+  React.useEffect(() => {
+    if(window.location.search){
+      const params = qs.parse(window.location.search.substring(1))
+      const sort = sortList.find(obj => obj.sortProperty === params.sortProperty)
+      dispatch(setFilters({
+        ...params,
+        sort
+      }));
+      isSearch.current = true
+    }
+  }, [])
+
+
+
+  React.useEffect(() => {
     window.scrollTo(0, 0);
+    if(isSearch.current){
+      fetchPizzas();
+    }
+    isSearch.current = true
   }, [categoryId, sortType, searchValue, pageCount]);
+
+  // Передаем параметры в URL
+  React.useEffect(() => {
+    if(isMounted.current){
+      const queryString = qs.stringify({
+        sortProperty: sortType,
+        categoryId,
+        pageCount
+      });
+      navigate(`?${queryString}`)
+    }
+    isMounted.current  = true
+  }, [categoryId, sortType, pageCount])
+
+
 
   // Прежде чем рендерить пиццы, фильтруем их. В итоге получаем функционал поиска
   // Такой вариант подходит для статики. То есть когда данных не много и они не будут добаляться

@@ -9,7 +9,7 @@ interface NameSorted {
   sortProperty: string;
 }
 
-const sortList: NameSorted[] = [
+export const sortList: NameSorted[] = [
   { name: 'популярности (убыванию)', sortProperty: 'rating' },
   { name: 'популярности (возрастанию)', sortProperty: '-rating' },
   { name: 'цене (убыванию)', sortProperty: 'price' },
