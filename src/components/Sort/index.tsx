@@ -21,16 +21,28 @@ export const sortList: NameSorted[] = [
 function Sort() {
   const dispatch = useDispatch();
   const sort = useSelector((state: RootState) => state.filter.sort);
-
-  // Открытие и закрытие попапа
+  const sortRef = React.useRef();
   const [isVisiblePopup, setIsVisiblePopup] = React.useState(false);
 
   const sortedListItem = (obj: object) => {
     dispatch(setSort(obj));
     setIsVisiblePopup(!isVisiblePopup);
   };
+  React.useEffect(() => {
+    // Если не было клика на sortRef
+    const handleClickOutside = (event) => {
+      if (!event.composedPath().includes(sortRef.current)) {
+        // То мы закрываем попап
+        setIsVisiblePopup(false);
+      }
+    };
+    // При клике на body мы проверяем:
+    document.body.addEventListener('click', handleClickOutside);
+
+    return () => document.body.removeEventListener('click', handleClickOutside);
+  }, []);
   return (
-    <div className="sort">
+    <div className="sort" ref={sortRef}>
       <div className="sort__label">
         <svg
           width="10"
@@ -57,9 +69,7 @@ function Sort() {
               <li
                 key={idx}
                 onClick={() => sortedListItem(obj)}
-                className={
-                  sort.sortProperty == obj.sortProperty ? 'active' : ''
-                }>
+                className={sort.sortProperty == obj.sortProperty ? 'active' : ''}>
                 {obj.name}
               </li>
             ))}
